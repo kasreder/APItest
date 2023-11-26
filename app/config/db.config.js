@@ -1,7 +1,7 @@
 module.exports = {
-  HOST: "localhost",
-  USER: "root",
-  PORT:5506,
-  PASSWORD: "1234",
-  DB: "new_db"
+  HOST: "13.125.232.0",
+  USER: "mysqlmaster",
+  PORT:3306,
+  PASSWORD: "kminer@",
+  DB: "express"
 };
