@@ -12,7 +12,7 @@
     "mysql",
     "restapi"
   ],
-  "author": "bezkoder",
+  "author": "kasreder",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",

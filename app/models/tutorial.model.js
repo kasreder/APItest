@@ -2,30 +2,32 @@ const sql = require("./db.js");
 console.log("쿼리");
 
 // constructor
-const Tutorial = function(tutorial) {
+const Posts = function(post) {
   console.log("쿼리_디스");
-  this.title = tutorial.title;
-  this.description = tutorial.description;
-  this.published = tutorial.published;
+  this.title = post.title;
+  this.content = post.content;
+  // this.published = post.published;
 };
 
-Tutorial.create = (newTutorial, result) => {
+Posts.create = (newTutorial, result) => {
   console.log("쿼리_create");
-  sql.query("INSERT INTO tutorials SET ?", newTutorial, (err, res) => {
+  sql.query("INSERT INTO posts SET ?", newTutorial, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
       return;
     }
 
-    console.log("created tutorial: ", { id: res.insertId, ...newTutorial });
+    console.log("created posts: ", { id: res.insertId, ...newTutorial });
     result(null, { id: res.insertId, ...newTutorial });
   });
 };
 
-Tutorial.findById = (id, result) => {
+Posts.findById = (id, result) => {
   console.log("쿼리_findById");
-  sql.query(`SELECT * FROM tutorials WHERE id = ${id}`, (err, res) => {
+  // sql.query(`SELECT * FROM posts WHERE id = ${id}`, (err, res) => {
+    let query = `SELECT posts.id, posts.title, posts.content, posts.created_at, users.nickname FROM posts INNER JOIN users ON posts.user_id = users.id WHERE posts.id = ${id}`;
+  sql.query(query, (err, res) => {  
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -33,7 +35,7 @@ Tutorial.findById = (id, result) => {
     }
 
     if (res.length) {
-      console.log("found tutorial: ", res[0]);
+      console.log("found posts: ", res[0]);
       result(null, res[0]);
       return;
     }
@@ -43,9 +45,10 @@ Tutorial.findById = (id, result) => {
   });
 };
 
-Tutorial.getAll = (title, result) => {
+Posts.getAll = (title, result) => {
   console.log("쿼리_getAll");
-  let query = "SELECT * FROM tutorials";
+  // let query = "SELECT * FROM posts";
+    let query = "SELECT posts.id, posts.title, posts.content, posts.created_at, users.nickname FROM posts INNER JOIN users ON posts.user_id = users.id";
 
   if (title) {
     query += ` WHERE title LIKE '%${title}%'`;
@@ -58,30 +61,33 @@ Tutorial.getAll = (title, result) => {
       return;
     }
 
-    console.log("tutorials: ", res);
+    console.log("posts: ", res);
     result(null, res);
   });
 };
 
-Tutorial.getAllPublished = result => {
+Posts.getAllPublished = result => {
   console.log("쿼리_getAllPublished");
-  sql.query("SELECT * FROM tutorials WHERE published=true", (err, res) => {
+  // sql.query("SELECT * FROM posts WHERE published=true", (err, res) => {
+  sql.query("SELECT * FROM posts WHERE", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
       return;
     }
 
-    console.log("tutorials: ", res);
+    console.log("posts: ", res);
     result(null, res);
   });
 };
 
-Tutorial.updateById = (id, tutorial, result) => {
+Posts.updateById = (id, post, result) => {
   console.log("쿼리_updateById");
   sql.query(
-    "UPDATE tutorials SET title = ?, description = ?, published = ? WHERE id = ?",
-    [tutorial.title, tutorial.description, tutorial.published, id],
+    // "UPDATE posts SET title = ?, content = ?, published = ? WHERE id = ?",
+    // [post.title, post.content, post.published, id],
+    "UPDATE posts SET title = ?, content = ?, WHERE id = ?",
+    [post.title, post.content, id],
     (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -95,15 +101,15 @@ Tutorial.updateById = (id, tutorial, result) => {
         return;
       }
 
-      console.log("updated tutorial: ", { id: id, ...tutorial });
-      result(null, { id: id, ...tutorial });
+      console.log("updated posts: ", { id: id, ...post });
+      result(null, { id: id, ...post });
     }
   );
 };
 
-Tutorial.remove = (id, result) => {
+Posts.remove = (id, result) => {
   console.log("쿼리_remove");
-  sql.query("DELETE FROM tutorials WHERE id = ?", id, (err, res) => {
+  sql.query("DELETE FROM posts WHERE id = ?", id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -116,23 +122,23 @@ Tutorial.remove = (id, result) => {
       return;
     }
 
-    console.log("deleted tutorial with id: ", id);
+    console.log("deleted posts with id: ", id);
     result(null, res);
   });
 };
 
-Tutorial.removeAll = result => {
+Posts.removeAll = result => {
   console.log("쿼리_removeAll");
-  sql.query("DELETE FROM tutorials", (err, res) => {
+  sql.query("DELETE FROM posts", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
       return;
     }
 
-    console.log(`deleted ${res.affectedRows} tutorials`);
+    console.log(`deleted ${res.affectedRows} posts`);
     result(null, res);
   });
 };
 
-module.exports = Tutorial;
+module.exports = Posts;

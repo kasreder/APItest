@@ -1,5 +1,5 @@
 const express = require("express");
-// const bodyParser = require("body-parser"); /* deprecated */
+// const bodyParser = require("body-parser"); /* deprecated111 */
 const cors = require("cors");
 const https = require('https');
 const http = require('http');
@@ -43,27 +43,6 @@ app.listen(PORT, () => {
    console.log(`HTTPS server started on port 443`);
  });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // const express = require("express");
 // // const bodyParser = require("body-parser"); /* deprecated */
 // const cors = require("cors");
@@ -78,10 +57,10 @@ app.listen(PORT, () => {
 
 // app.use(cors());
 
-// // const options = {
-// //   key: fs.readFileSync("./app/config/localhost+1-key.pem",'utf-8'),
-// //   cert: fs.readFileSync("./app/config/localhost+1.pem",'utf-8'),
-// // };
+// const options = {
+//   key: fs.readFileSync("./app/config/localhost+1-key.pem",'utf-8'),
+//   cert: fs.readFileSync("./app/config/localhost+1.pem",'utf-8'),
+// };
 
 // // parse requests of content-type - application/json
 // app.use(express.json()); /* bodyParser.json() is deprecated */
@@ -91,18 +70,18 @@ app.listen(PORT, () => {
 
 // // simple route
 // app.get("/", (req, res) => {
-//   res.json({ message: "Welcome to cosmosDB application." });
+//   res.json({ message: "Welcome to bezkoder application." });
 // });
 
 // require("./app/routes/tutorial.routes.js")(app);
 
 // // set port, listen for requests
-// const PORT = process.env.PORT || 8080;
+// const PORT = process.env.PORT || 8000;
 // app.listen(PORT, () => {
 //   console.log(`Server is running on port ${PORT}.`);
 // });
 
 // // // https 의존성으로 certificate와 private key로 새로운 서버를 시작
-// // https.createServer(options, app).listen(443, () => {
-// //   console.log(`HTTPS server started on port 443`);
+// // https.createServer(options, app).listen(8000, () => {
+// //   console.log(`HTTPS server started on port 8000`);
 // // });

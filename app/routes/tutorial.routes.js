@@ -1,37 +1,37 @@
 module.exports = app => {
   console.log("라우팅");
   // 기능구현바라봄 가져옴
-  const tutorials = require("../controllers/tutorial.controller.js");
+  const posts = require("../controllers/tutorial.controller.js");
 
   var router = require("express").Router();
 
-  // Create a new Tutorial
+  // Create a new post
   // 글작성
-  router.post("/", tutorials.create);
+  router.post("/", posts.create);
 
-  // Retrieve all Tutorials
+  // Retrieve all posts
   // 모든 내용 검색
-  router.get("/", tutorials.findAll);
+  router.get("/", posts.findAll);
 
-  // Retrieve all published Tutorials
+  // Retrieve all published posts
   // 게시된 모든 내용 찾기
-  router.get("/published", tutorials.findAllPublished);
+  router.get("/published", posts.findAllPublished);
 
-  // Retrieve a single Tutorial with id
+  // Retrieve a single post with id
   // ID기준으로 찾기
-  router.get("/:id", tutorials.findOne);
+  router.get("/:id", posts.findOne);
 
-  // Update a Tutorial with id
+  // Update a post with id
   // ID기준 수정
-  router.put("/:id", tutorials.update);
+  router.put("/:id", posts.update);
 
-  // Delete a Tutorial with id
+  // Delete a post with id
   // ID기준 삭제
-  router.delete("/:id", tutorials.delete);
+  router.delete("/:id", posts.delete);
 
-  // Delete all Tutorials
+  // Delete all posts
   // 모두삭제
-  router.delete("/", tutorials.deleteAll);
+  router.delete("/", posts.deleteAll);
 
   // 모든 내용 검색
   app.use('/main', router);
