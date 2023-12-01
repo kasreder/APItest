@@ -1,5 +1,6 @@
 
 sudo mysql -u root -p
+
 create user '아이디'@'%' identified by 'password';
 '아이디'@'%' : 모든 ip주소에서 아이디 사용자로 접근 가능
 '아이디'@'localhost' : 내부에서만  아이디 사용자로 접근 가능
