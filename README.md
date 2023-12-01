@@ -1,8 +1,3 @@
-/main
-/nwn/news
-/nwn/news/Notice
-/boards/free
-/boards/free/develop
 
 sudo mysql -u root -p
 create user '아이디'@'%' identified by 'password';
@@ -18,11 +13,7 @@ grant all privileges on *.* to 'root'@'%';
 
 flush privileges;
 
-
 express?useSSL=false&allowPublicKeyRetrieval=true
-
-
-
 
 인증확인
 
