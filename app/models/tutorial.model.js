@@ -2,7 +2,7 @@ const sql = require("./db.js");
 console.log("쿼리");
 
 // constructor
-const Posts = function(post) {
+const Posts = function (post) {
   console.log("쿼리_디스");
   this.title = post.title;
   this.content = post.content;
@@ -26,29 +26,111 @@ Posts.create = (newTutorial, result) => {
 Posts.findById = (id, result) => {
   console.log("쿼리_findById");
   // sql.query(`SELECT * FROM posts WHERE id = ${id}`, (err, res) => {
-    let query = `SELECT posts.id, posts.title, posts.content, posts.created_at, users.nickname FROM posts INNER JOIN users ON posts.user_id = users.id WHERE posts.id = ${id}`;
-  sql.query(query, (err, res) => {  
+  // 게시글만 불러오기
+  let queryPost =`
+  SELECT
+    posts.id,
+    posts.title,
+    posts.content,
+    posts.created_at,
+    users.nickname
+  FROM
+    posts
+  INNER JOIN
+    users ON posts.user_id = users.id
+  WHERE
+    posts.id = ${id}`;
+
+  //댓글도 같이 불러오기
+  // let queryPost = `
+  // SELECT 
+  //   p.id AS post_id, 
+  //   p.title, 
+  //   p.content AS post_content, 
+  //   p.created_at AS post_created_at, 
+  //   u.nickname AS post_author_nickname, 
+  //   c.id AS comment_id, 
+  //   c.comment_content, 
+  //   c.created_at AS comment_created_at, 
+  //   cu.nickname AS comment_author_nickname
+  // FROM 
+  //   posts p
+  // INNER JOIN 
+  //   users u ON p.user_id = u.id
+  // LEFT JOIN 
+  //   comments c ON p.id = c.post_id
+  // LEFT JOIN 
+  //   users cu ON c.user_id = cu.id
+  // WHERE 
+  //   p.id = ${id}
+  // ORDER BY 
+  //   c.created_at ASC;
+  //`;
+
+  sql.query(queryPost, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
       return;
     }
 
-    if (res.length) {
-      console.log("found posts: ", res[0]);
-      result(null, res[0]);
-      return;
-    }
+    // if (res.length) {
+    //   console.log("found posts: ", res[0]);
+    //   result(null, res[0]);
+    //   return;
+    // }
 
     // not found Tutorial with the id
-    result({ kind: "not_found" }, null);
+    //     result({ kind: "not_found" }, null);
+    //   });
+    // };
+
+    if (res.length) {
+      // 게시글에 대한 댓글 불러오기
+      let queryComments = `
+      SELECT 
+        c.id AS comment_id,
+        c.comment_content,
+        c.created_at AS comment_created_at,
+        u.nickname AS comment_author_nickname
+      FROM 
+        comments c
+      INNER JOIN 
+        users u ON c.user_id = u.id
+      WHERE 
+        c.post_id = ${id}
+      ORDER BY 
+        c.created_at ASC;
+      `;
+
+      sql.query(queryComments, (err, resComments) => {
+        if (err) {
+          console.log("error: ", err);
+          result(err, null);
+          return;
+        }
+
+        // 게시글과 댓글을 결과에 추가
+        let data = {
+          post: res[0],
+          comments: resComments,
+        };
+
+        result(null, data);
+        console.log("found posts+comments: ", data);
+      });
+    } else {
+      // 게시글을 찾을 수 없음
+      result({ kind: "not_found" }, null);
+    }
   });
 };
 
 Posts.getAll = (title, result) => {
   console.log("쿼리_getAll");
   // let query = "SELECT * FROM posts";
-    let query = "SELECT posts.id, posts.title, posts.content, posts.created_at, users.nickname FROM posts INNER JOIN users ON posts.user_id = users.id";
+  let query =
+    "SELECT posts.id, posts.title, posts.content, posts.created_at, users.nickname FROM posts INNER JOIN users ON posts.user_id = users.id";
 
   if (title) {
     query += ` WHERE title LIKE '%${title}%'`;
@@ -66,7 +148,7 @@ Posts.getAll = (title, result) => {
   });
 };
 
-Posts.getAllPublished = result => {
+Posts.getAllPublished = (result) => {
   console.log("쿼리_getAllPublished");
   // sql.query("SELECT * FROM posts WHERE published=true", (err, res) => {
   sql.query("SELECT * FROM posts WHERE", (err, res) => {
@@ -127,7 +209,7 @@ Posts.remove = (id, result) => {
   });
 };
 
-Posts.removeAll = result => {
+Posts.removeAll = (result) => {
   console.log("쿼리_removeAll");
   sql.query("DELETE FROM posts", (err, res) => {
     if (err) {

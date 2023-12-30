@@ -4,20 +4,20 @@ const cors = require("cors");
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
-const { corsOptions } = require("./corsOptions.js");
 
 const app = express();
 
-const whitelist = ["http://localhost:80", "https://localhost:443,", "https://cosmosx.kr/*];
-  exports.whitelist = whitelist;
+// var corsOptions = {
+// 	origin: "http://localhost:80"
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
-const options = {
-  ca: fs.readFileSync('/etc/letsencrypt/live/terraforming.info/fullchain.pem'),
-  key: fs.readFileSync('/etc/letsencrypt/live/terraforming.info/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/terraforming.info/cert.pem'),
-};
+// const options = {
+//   ca: fs.readFileSync('/etc/letsencrypt/live/terraforming.info/fullchain.pem'),
+//   key: fs.readFileSync('/etc/letsencrypt/live/terraforming.info/privkey.pem'),
+//   cert: fs.readFileSync('/etc/letsencrypt/live/terraforming.info/cert.pem'),
+// };
 
 // parse requests of content-type - application/json
 app.use(express.json()); /* bodyParser.json() is deprecated */
@@ -38,11 +38,11 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-
- // https 의존성으로 certificate와 private key로 새로운 서버를 시작
- https.createServer(options, app).listen(443, () => {
-   console.log(`HTTPS server started on port 443`);
- });
+//  ht
+//  // https 의존성으로 certificate와 private key로 새로운 서버를 시작
+//  https.createServer(options, app).listen(443, () => {
+//    console.log(`HTTPS server started on port 443`);
+//  });
 
 // const express = require("express");
 // // const bodyParser = require("body-parser"); /* deprecated */
