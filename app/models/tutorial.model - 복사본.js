@@ -42,7 +42,7 @@ Posts.findById = (id, result) => {
   INNER JOIN
     users ON posts.user_id = users.id
   WHERE
-    posts.id = ?`;
+    posts.id = ${id}`;
 
   //댓글도 같이 불러오기
   // let queryPost = `
@@ -70,7 +70,7 @@ Posts.findById = (id, result) => {
   //   c.created_at ASC;
   //`;
 
-  sql.query(queryPost, [id], (err, res) => {
+  sql.query(queryPost, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -95,54 +95,45 @@ Posts.findById = (id, result) => {
         c.id AS comment_id,
         c.comment_content,
         c.created_at AS comment_created_at,
-        u.nickname AS comment_author_nickname,
-        c.parent_comment_id,
-        c.parent_comment_order
+        u.nickname AS comment_author_nickname
       FROM 
         comments c
       INNER JOIN 
         users u ON c.user_id = u.id
       WHERE 
-        c.post_id = ?
+        c.post_id = ${id}
       ORDER BY 
         c.created_at ASC;
       `;
-     // 두 번째 쿼리 실행
-     sql.query(queryComments, [id], (err, resComments) => {
-      if (err) {
-        console.log("error: ", err);
-        result(err, null);
-        return;
-      }
 
-      // 게시글과 댓글을 결과에 추가
-      let data = {
-        post: res[0],
-        comments: resComments,
-      };
+      sql.query(queryComments, (err, resComments) => {
+        if (err) {
+          console.log("error: ", err);
+          result(err, null);
+          return;
+        }
 
-      result(null, data);
-      console.log("found posts+comments: ", data);
-    });
-  } else {
-    result({ kind: "not_found" }, null);
-  }
-});
+        // 게시글과 댓글을 결과에 추가
+        let data = {
+          post: res[0],
+          comments: resComments,
+        };
+
+        result(null, data);
+        console.log("found posts+comments: ", data);
+      });
+    } else {
+      // 게시글을 찾을 수 없음
+      result({ kind: "not_found" }, null);
+    }
+  });
 };
 
 Posts.getAll = (title, result) => {
   console.log("쿼리_getAll");
   // let query = "SELECT * FROM posts";
-  let query =`
-    SELECT
-      posts.id,
-      posts.title,
-      posts.content,
-      posts.created_at,
-      users.nickname
-    FROM
-      posts 
-    INNER JOIN users ON posts.user_id = users.id`;
+  let query =
+    "SELECT posts.id, posts.title, posts.content, posts.created_at, users.nickname FROM posts INNER JOIN users ON posts.user_id = users.id";
 
   if (title) {
     query += ` WHERE title LIKE '%${title}%'`;
@@ -160,29 +151,10 @@ Posts.getAll = (title, result) => {
   });
 };
 
-Posts.getAllPublished = (boardName, result) => {
+Posts.getAllPublished = (result) => {
   console.log("쿼리_getAllPublished");
-
-  let query = `
-  SELECT
-  posts.id,
-  posts.title,
-  posts.content,
-  posts.created_at,
-  users.nickname,
-  boards.bname 
-FROM
-  posts 
-INNER JOIN 
-  users ON posts.user_id = users.id
-INNER JOIN 
-  boards ON posts.board_id = boards.id`;
- 
-  if (boardName) {
-    query += " WHERE boards.bname = ?";
-  }
-
-  sql.query(query, boardName ? [boardName] : [], (err, res) => {
+  // sql.query("SELECT * FROM posts WHERE published=true", (err, res) => {
+  sql.query("SELECT * FROM posts WHERE", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -193,9 +165,6 @@ INNER JOIN
     result(null, res);
   });
 };
-
-
-
 
 Posts.updateById = (id, post, result) => {
   console.log("쿼리_updateById");
